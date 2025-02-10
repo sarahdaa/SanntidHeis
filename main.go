@@ -4,7 +4,7 @@ import (
 	"fmt"
 	//"time"
 	"G19_heis2/Heis/driver/elevio"
-	//"G19_heis2/Heis/config"
+	"G19_heis2/Heis/config"
 	//"G19_heis2/Heis/logic"
 	"G19_heis2/Heis/FSM"
 )
@@ -14,9 +14,11 @@ func main() {
 
 	// Initialize the elevator system
 	elevio.Init("localhost:15657", numFloors)
+	id := config.InitID()
+	elevator := config.InitElev(id)
 
-	var currentFloor int = 0
-	var currentDir elevio.MotorDirection = elevio.MD_Stop
+	//var currentFloor int = 0
+	//var currentDir elevio.MotorDirection = elevio.MD_Stop
 
 	drv_buttons := make(chan elevio.ButtonEvent)
 	drv_floors := make(chan int)
@@ -30,5 +32,5 @@ func main() {
 
 	fmt.Println("Elevator system initialized...")
 
-	FSM.Fsm(currentDir, currentFloor, drv_buttons, drv_obstr, drv_stop, drv_floors, numFloors)
+	FSM.Fsm(&elevator, drv_buttons, drv_obstr, drv_stop, drv_floors, numFloors)
 }

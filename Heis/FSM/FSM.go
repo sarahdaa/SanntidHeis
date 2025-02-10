@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func Fsm(currentDir elevio.MotorDirection, currentFloor int, drv_buttons chan elevio.ButtonEvent, drv_obstr chan bool, drv_stop chan bool, drv_floors chan int, numFloors int) {
+func Fsm(elevator *config.Elevator, drv_buttons chan elevio.ButtonEvent, drv_obstr chan bool, drv_stop chan bool, drv_floors chan int, numFloors int) {
 	for {
 		select {
 
@@ -17,18 +17,18 @@ func Fsm(currentDir elevio.MotorDirection, currentFloor int, drv_buttons chan el
 			fmt.Printf("Button pressed: %+v\n", btnPress)
 			logic.AddOrder(btnPress.Floor, btnPress.Button)
 
-			if currentDir == elevio.MD_Stop {
-				currentDir = logic.ChooseDirection(currentFloor, currentDir, config.Orders)
-				elevio.SetMotorDirection(currentDir)
+			if elevator.CurrDirn == elevio.MD_Stop {
+				elevator.CurrDirn = logic.ChooseDirection(elevator.Floor, elevator.CurrDirn, config.Orders)
+				elevio.SetMotorDirection(elevator.CurrDirn)
 			}
 
 		// Handling floor sensor updates
 		case newFloor := <-drv_floors:
 			fmt.Printf("Arrived at floor: %d\n", newFloor)
-			currentFloor = newFloor
-			elevio.SetFloorIndicator(currentFloor)
+			elevator.Floor = newFloor
+			elevio.SetFloorIndicator(elevator.Floor)
 
-			logic.ControlElevator(currentFloor, &currentDir, &config.Orders)
+			logic.ControlElevator(elevator.Floor, &elevator.CurrDirn, &config.Orders)
 
 		// Handling obstruction events
 		case obstruction := <-drv_obstr:
@@ -36,8 +36,8 @@ func Fsm(currentDir elevio.MotorDirection, currentFloor int, drv_buttons chan el
 			if obstruction {
 				elevio.SetMotorDirection(elevio.MD_Stop)
 			} else {
-				currentDir = logic.ChooseDirection(currentFloor, currentDir, config.Orders)
-				elevio.SetMotorDirection(currentDir)
+				elevator.CurrDirn = logic.ChooseDirection(elevator.Floor, elevator.CurrDirn, config.Orders)
+				elevio.SetMotorDirection(elevator.CurrDirn)
 			}
 
 			// Handling stop button press
@@ -56,8 +56,8 @@ func Fsm(currentDir elevio.MotorDirection, currentFloor int, drv_buttons chan el
 			time.Sleep(3 * time.Second)
 			elevio.SetStopLamp(false)
 
-			currentDir = logic.ChooseDirection(currentFloor, currentDir, config.Orders)
-			elevio.SetMotorDirection(currentDir)
+			elevator.CurrDirn = logic.ChooseDirection(elevator.Floor, elevator.CurrDirn, config.Orders)
+			elevio.SetMotorDirection(elevator.CurrDirn)
 
 		}
 	}
