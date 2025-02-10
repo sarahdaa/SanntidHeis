@@ -7,6 +7,7 @@ import (
 	"G19_heis2/Heis/config"
 	//"G19_heis2/Heis/logic"
 	"G19_heis2/Heis/FSM"
+	"G19_heis2/Heis/failuredetection"
 )
 
 func main() {
@@ -19,6 +20,11 @@ func main() {
 
 	//var currentFloor int = 0
 	//var currentDir elevio.MotorDirection = elevio.MD_Stop
+
+	txHeartbeat := make(chan failuredetection.HeartBeat)
+	rxHeartbeat := make(chan failuredetection.HeartBeat)
+
+	failuredetection.StartHeartBeat(&elevator, txHeartbeat, rxHeartbeat)
 
 	drv_buttons := make(chan elevio.ButtonEvent)
 	drv_floors := make(chan int)
