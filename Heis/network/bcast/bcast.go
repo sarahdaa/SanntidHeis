@@ -1,7 +1,7 @@
 package bcast
 
 import (
-	"Network-go/network/conn"
+	"G19_heis2/Heis/network/conn"
 	"encoding/json"
 	"fmt"
 	"net"

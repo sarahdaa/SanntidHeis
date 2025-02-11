@@ -75,3 +75,21 @@ func InitID() string{
 	return fmt.Sprintf("%s-%d", localIP, os.Getpid())
 }
 
+type HallRequestAssignment struct {
+	ID string 
+	UpRequests []bool
+	DownRequests []bool
+}
+type AssignmentResults struct{
+	Assignments []HallRequestAssignment
+}
+
+type elevatorchannels struct {
+	Drv_buttons chan elevio.ButtonEvent
+	Drv_floors chan int 
+	Drv_obstruction  chan bool
+	AssignHallOrders chan elevio.ButtonEvent
+	HallOrders chan *AssignmentResults
+
+}
+

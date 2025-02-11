@@ -1,7 +1,7 @@
 package peers
 
 import (
-	"Network-go/network/conn"
+	"G19_heis2/Heis/network/conn"
 	"fmt"
 	"net"
 	"sort"

@@ -8,6 +8,7 @@ import (
 	//"G19_heis2/Heis/logic"
 	"G19_heis2/Heis/FSM"
 	"G19_heis2/Heis/failuredetection"
+
 )
 
 func main() {
@@ -25,6 +26,8 @@ func main() {
 	rxHeartbeat := make(chan failuredetection.HeartBeat)
 
 	failuredetection.StartHeartBeat(&elevator, txHeartbeat, rxHeartbeat)
+	
+
 
 	drv_buttons := make(chan elevio.ButtonEvent)
 	drv_floors := make(chan int)
@@ -39,4 +42,6 @@ func main() {
 	fmt.Println("Elevator system initialized...")
 
 	FSM.Fsm(&elevator, drv_buttons, drv_obstr, drv_stop, drv_floors, numFloors)
+
+
 }
