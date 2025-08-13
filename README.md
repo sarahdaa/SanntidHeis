@@ -43,9 +43,3 @@ Timer: Provides non-blocking timers for controlling door open duration and detec
 
 ### Terminate 
 - "ctrl + c" in terminal
-
-
-## Authors:
-Brede Midttun, bredemi@stud.ntnu.no
-May Linn Kaarhus, maylk@stud.ntnu.no
-Sara Homme Daasvand, sarahda@stud.ntnu.no
